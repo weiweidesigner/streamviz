@@ -82,6 +82,8 @@ describe('streamviz protocol', () => {
     expect(readme).toContain('round only its free outer end')
     expect(readme).toContain('Vertical positive bars round only the top')
     expect(readme).toContain('vertical negative bars round only the bottom')
+    expect(readme).toContain('Place the legend below the plot by default')
+    expect(readme).toContain('outside the SVG/canvas')
     expect(readme).not.toContain('Use hardcoded hex or Chart.js defaults')
   })
 })

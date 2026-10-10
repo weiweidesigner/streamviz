@@ -273,13 +273,13 @@ plugins: { legend: { display: false } }
 ```
 
 ```html
-<div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 8px; font-size: 12px; color: var(--sv-text-secondary);">
+<div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 10px; font-size: 12px; color: var(--sv-text-secondary);">
   <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 10px; height: 10px; border-radius: 2px; background: var(--sv-chart-series-1);"></span>Chrome 65%</span>
   <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 10px; height: 10px; border-radius: 2px; background: var(--sv-chart-series-2);"></span>Safari 18%</span>
 </div>
 ```
 
-Include the value/percentage in each label when the data is categorical (pie, donut, single-series bar). Position the legend above the chart (`margin-bottom`) or below (`margin-top`) — not inside the canvas.
+Include the value/percentage in each label when the data is categorical (pie, donut, single-series bar). Place the legend below the plot by default with 8–12px of top margin, outside the SVG/canvas. Put it above only when the lower position would separate it from the chart or collide with required annotations. Never overlay the legend on the plot.
 
 **Dashboard layout** — wrap summary numbers in metric cards (see UI fragment) above the chart. Chart canvas flows below without a card wrapper. Use `sendPrompt()` for drill-down: `sendPrompt('Break down Q4 by region')`.
 
