@@ -8,6 +8,7 @@
 - Normalized report roots to the full host width and removed legacy centered canvas gutters.
 - Added a dark-theme compatibility layer for legacy `.sv` reports with fixed light surfaces, text, tables, badges, and SVG labels.
 - Tightened authoring guidance for chart gutters, bar-label contrast, and connected line series.
+- Added chart typography and long-category guidance to prevent fixed-viewBox SVG upscaling from making labels larger than titles or causing x-axis collisions.
 
 ## 0.1.1
 

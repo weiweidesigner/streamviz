@@ -253,6 +253,9 @@ For status/semantic meaning in UI (success, warning, danger) use CSS variables. 
 - For horizontal bar charts: wrapper div height should be at least (number_of_bars * 40) + 80 pixels.
 - Keep plot-area padding tight. Reserve only enough left/right space for the longest axis or outside value label; do not center a narrow plot inside a full-width report.
 - Put bar value labels outside the bar by default. If a label must sit inside a bar, switch it to a theme-safe contrasting color and keep enough inset from the bar edge.
+- Do not stretch a small fixed-viewBox SVG to fill an unbounded wide container. SVG text scales with the geometry and can become visually larger than nearby HTML headings. Design the SVG near its final rendered width, or use responsive HTML/CSS bars when labels must keep CSS pixel sizes.
+- Preserve the final rendered type hierarchy: chart title 16–18px, data labels 12–14px, and axis/category labels 11–13px. Axis and data labels must never appear larger than the chart title.
+- Long categorical x-axis labels get a dedicated band and at most two centered `tspan` lines. If they still collide, switch to horizontal bars or a compact table; never overlap, clip, or densely rotate labels to force them in.
 - A line dataset must render an actual connecting stroke (`showLine: true`, a visible `borderWidth`, and one consistent dataset). Do not approximate a line chart with disconnected point markers.
 - Load UMD build via `<script src="https://cdnjs.cloudflare.com/ajax/libs/...">` — sets `window.Chart` global. Follow with plain `<script>` (no `type="module"`).
 - Multiple charts: use unique IDs (`myChart1`, `myChart2`). Each gets its own canvas+div pair.
