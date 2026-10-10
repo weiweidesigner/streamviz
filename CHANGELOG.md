@@ -13,6 +13,7 @@
 - Added fixed vertical-rhythm guidance and HTML/CSS grid recommendations for long horizontal rankings on wide screens.
 - Required axis-adjacent bar ends to stay square while rounding only the free outer end.
 - Moved the default chart-legend position below the plot, centered it as a group, and kept it outside the rendering surface.
+- Prevented short chart cards in side-by-side grids from stretching to the height of taller neighbors.
 
 ## 0.1.1
 
