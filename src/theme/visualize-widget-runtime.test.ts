@@ -145,5 +145,6 @@ describe('visualize widget runtime palette', () => {
     expect(document).toContain('--ink:var(--sv-text-primary)!important')
     expect(document).toContain('tbody td{background:var(--sv-bg-elevated)!important')
     expect(document).toContain('style.setAttribute(\'data-visualize-platform-normalize\', \'\')')
+    expect(document).toContain('new MutationObserver(() => requestAnimationFrame(postSize))')
   })
 })

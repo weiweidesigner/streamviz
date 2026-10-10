@@ -4,6 +4,7 @@
 
 - Removed the renderer and height-cache caps so long reports are no longer clipped.
 - Allowed final measurements to shrink after scripts settle, preventing stale blank space below artifacts.
+- Observed streamed descendant mutations so overflowing or absolutely positioned content can update the iframe height.
 - Normalized report roots to the full host width and removed legacy centered canvas gutters.
 - Added a dark-theme compatibility layer for legacy `.sv` reports with fixed light surfaces, text, tables, badges, and SVG labels.
 - Tightened authoring guidance for chart gutters, bar-label contrast, and connected line series.

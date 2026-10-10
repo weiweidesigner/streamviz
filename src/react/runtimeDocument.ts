@@ -432,6 +432,10 @@ export const buildRuntimeDocument = (id: string) => {
     const observer = new ResizeObserver(postSize);
     if (root) observer.observe(root);
   }
+  if (root && typeof MutationObserver !== 'undefined') {
+    const observer = new MutationObserver(() => requestAnimationFrame(postSize));
+    observer.observe(root, { childList: true, subtree: true, characterData: true, attributes: true });
+  }
   parent.postMessage({ type: 'visualize-widget:ready', id: widgetId }, '*');
   requestAnimationFrame(postSize);
 })();
