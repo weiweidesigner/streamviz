@@ -10,6 +10,7 @@
 - Tightened authoring guidance for chart gutters, bar-label contrast, and connected line series.
 - Added chart typography and long-category guidance to prevent fixed-viewBox SVG upscaling from making labels larger than titles or causing x-axis collisions.
 - Added final-size guidance for non-scaling strokes, markers, bar thickness, and corner radii in responsive SVG charts.
+- Added fixed vertical-rhythm guidance and HTML/CSS grid recommendations for long horizontal rankings on wide screens.
 
 ## 0.1.1
 
