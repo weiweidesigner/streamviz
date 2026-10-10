@@ -86,6 +86,7 @@ describe('streamviz protocol', () => {
     expect(readme).toContain('Place the legend below the plot by default')
     expect(readme).toContain('outside the SVG/canvas')
     expect(readme).toContain('center the legend items as a group')
+    expect(readme).toContain('end the viewBox immediately after the x-axis label band')
     expect(readme).toContain('set `align-items: start`')
     expect(readme).toContain('keeps its intrinsic height')
     expect(readme).not.toContain('Use hardcoded hex or Chart.js defaults')

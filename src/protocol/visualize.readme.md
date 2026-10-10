@@ -282,6 +282,7 @@ plugins: { legend: { display: false } }
 ```
 
 Include the value/percentage in each label when the data is categorical (pie, donut, single-series bar). Place the legend below the plot by default with 8–12px of top margin, outside the SVG/canvas, and center the legend items as a group. Put it above only when the lower position would separate it from the chart or collide with required annotations. Never overlay the legend on the plot.
+When a legend sits below an SVG, end the viewBox immediately after the x-axis label band. Do not keep an extra empty bottom band inside the SVG and then add legend margin on top of it; keep the visible distance from the final label baseline to the legend around 8–16px.
 
 **Dashboard layout** — wrap summary numbers in metric cards (see UI fragment) above the chart. Chart canvas flows below without a card wrapper. Use `sendPrompt()` for drill-down: `sendPrompt('Break down Q4 by region')`.
 
