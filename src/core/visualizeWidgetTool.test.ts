@@ -3,6 +3,8 @@ import {
   extractPartialJsonString,
   extractPartialJsonStringArray,
   extractVisualizeWidgetPayload,
+  getCachedVisualizeWidgetHeight,
+  setCachedVisualizeWidgetHeight,
   visualizeWidgetSourceKey,
 } from './visualizeWidgetTool'
 
@@ -60,5 +62,11 @@ describe('streamviz tool payload parsing', () => {
   it('builds stable source keys', () => {
     expect(visualizeWidgetSourceKey('<section>A</section>')).toBe(visualizeWidgetSourceKey('<section>A</section>'))
     expect(visualizeWidgetSourceKey('<section>A</section>')).not.toBe(visualizeWidgetSourceKey('<section>B</section>'))
+  })
+
+  it('keeps complete measurements for long reports', () => {
+    const key = 'long-report-height'
+    setCachedVisualizeWidgetHeight(key, 7200)
+    expect(getCachedVisualizeWidgetHeight(key)).toBe(7200)
   })
 })

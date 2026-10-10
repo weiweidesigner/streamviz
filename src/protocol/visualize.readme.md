@@ -49,6 +49,7 @@ Output streams token-by-token. Structure code so useful content appears early.
 - **Sentence case** always. Never Title Case, never ALL CAPS. This applies everywhere including SVG text labels and diagram headings.
 - **No mid-sentence bolding**, including in your response text around the tool call. Entity names, class names, function names go in `code style` not **bold**. Bold is for headings and labels only.
 - The widget container is `display: block; width: 100%`. Your HTML fills it naturally — no wrapper div needed. Just start with your content directly. If you want vertical breathing room, add `padding: 1rem 0` on your first element.
+- Do not put `max-width`, `margin-inline: auto`, or decorative horizontal padding on the outer report element. The report edge must align with surrounding host text; reserve internal space only where axes or labels require it.
 - Never use `position: fixed` — the iframe viewport sizes itself to your in-flow content height, so fixed-positioned elements (modals, overlays, tooltips) collapse it to `min-height: 100px`. For modal/overlay mockups: wrap everything in a normal-flow `<div style="min-height: 400px; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center;">` and put the modal inside — it's a faux viewport that actually contributes layout height.
 - No DOCTYPE, `<html>`, `<head>`, or `<body>` — just content fragments.
 - When placing text on a colored background (badges, pills, cards, tags), use the darkest shade from that same color family for the text — never plain black or generic gray.
@@ -250,6 +251,9 @@ For status/semantic meaning in UI (success, warning, danger) use CSS variables. 
 - Wrap `<canvas>` in `<div>` with explicit `height` and `position: relative`.
 - **Canvas sizing**: set height ONLY on the wrapper div, never on the canvas element itself. Use position: relative on the wrapper and responsive: true, maintainAspectRatio: false in Chart.js options. Never set CSS height directly on canvas — this causes wrong dimensions, especially for horizontal bar charts.
 - For horizontal bar charts: wrapper div height should be at least (number_of_bars * 40) + 80 pixels.
+- Keep plot-area padding tight. Reserve only enough left/right space for the longest axis or outside value label; do not center a narrow plot inside a full-width report.
+- Put bar value labels outside the bar by default. If a label must sit inside a bar, switch it to a theme-safe contrasting color and keep enough inset from the bar edge.
+- A line dataset must render an actual connecting stroke (`showLine: true`, a visible `borderWidth`, and one consistent dataset). Do not approximate a line chart with disconnected point markers.
 - Load UMD build via `<script src="https://cdnjs.cloudflare.com/ajax/libs/...">` — sets `window.Chart` global. Follow with plain `<script>` (no `type="module"`).
 - Multiple charts: use unique IDs (`myChart1`, `myChart2`). Each gets its own canvas+div pair.
 - For bubble and scatter charts: bubble radii extend past their center points, so points near axis boundaries get clipped. Pad the scale range — set `scales.y.min` and `scales.y.max` ~10% beyond your data range (same for x). Or use `layout: { padding: 20 }` as a blunt fallback.

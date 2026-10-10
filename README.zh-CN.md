@@ -143,6 +143,8 @@ export function Artifact({ toolCall, onFollowUp }: ArtifactProps) {
 
 主题可以修改颜色、字体、圆角和图表序列色，但不能替换 sandbox、安全过滤、流式内容可见性、iframe 测量或其他 runtime 行为。
 
+运行时也会修复旧版生成物常见的深色模式问题。以 `.sv` 为根且写死浅色 `--ink`、`--sub`、`--line`、`--card` 的报告，会自动映射到语义主题 token，覆盖卡片、表格、徽标和常见 SVG 标签。新生成物仍应直接使用公开的 `--sv-*` token。
+
 完整的主题 token 类型请查看 [API 参考](./docs/API.md)。
 
 ## 宿主适配器

@@ -14,10 +14,8 @@ import { buildRuntimeDocument } from './runtimeDocument'
 const spacingPx = (steps: number) => steps * 4
 const COPY_FEEDBACK_DURATION_MS = 1000
 const VISUALIZE_WIDGET_MIN_HEIGHT = spacingPx(12)
-const VISUALIZE_WIDGET_MAX_HEIGHT = 1536
 const DEFAULT_VISUALIZE_LOADING_MESSAGE = '正在生成可视化代码'
 const VISUALIZE_LOADING_MESSAGE_DWELL_MS = 1000
-const VISUALIZE_WIDGET_HEIGHT_SHRINK_TOLERANCE = spacingPx(8)
 const VISUALIZE_WIDGET_SNAPSHOT_TIMEOUT_MS = 8000
 
 const defaultRenderIcon = (
@@ -206,13 +204,12 @@ export default function StreamVisualization({
         }
         return
       }
-      const nextHeight = clampHeight(Number(data.height) || 0, VISUALIZE_WIDGET_MIN_HEIGHT, VISUALIZE_WIDGET_MAX_HEIGHT)
+      const nextHeight = clampHeight(Number(data.height) || 0, VISUALIZE_WIDGET_MIN_HEIGHT)
       measuredHeightRef.current = nextHeight
       measuredHeightKeyRef.current = visualizeWidgetSourceKey(latestPayloadRef.current.code)
       if (sourceKey && nextHeight > VISUALIZE_WIDGET_MIN_HEIGHT) setCachedVisualizeWidgetHeight(sourceKey, nextHeight)
       setHeight((previous) => {
         if (Math.abs(previous - nextHeight) <= 2) return previous
-        if (finalRef.current && nextHeight + VISUALIZE_WIDGET_HEIGHT_SHRINK_TOLERANCE < previous) return previous
         return nextHeight
       })
     }

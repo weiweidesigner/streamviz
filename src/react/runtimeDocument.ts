@@ -71,6 +71,41 @@ export const buildRuntimeDocument = (id: string) => {
   };
   const visibleContentNodes = () =>
     Array.from(root?.children || []).filter((node) => !['STYLE', 'SCRIPT', 'TEMPLATE', 'TITLE', 'META', 'LINK'].includes(node.tagName));
+  const platformNormalizeCss = [
+    '[data-visualize-root]{width:100%!important;min-width:0!important;max-width:none!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;margin:0!important;padding-top:0!important;background:transparent!important}',
+    '[data-visualize-root]>:is(section,main,article,div):first-child{width:100%!important;min-width:0!important;max-width:none!important;margin-left:0!important;margin-right:0!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv){--ink:var(--sv-text-primary)!important;--sub:var(--sv-text-secondary)!important;--line:var(--sv-border-subtle)!important;--card:var(--sv-bg-elevated)!important;color:var(--sv-text-primary)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) :is(h1,h2,h3,h4,h5,h6,b,strong,.sv-title,.sv-value,.v){color:var(--sv-text-primary)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) :is(p,li,.sv-sum,.pp-sub,.two p,ol.steps,.sv-label,.sv-muted,.k,.d){color:var(--sv-text-secondary)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) :is(.sv-card,.sv-metric,.pp-tabs>div,.sv-narr>div,.sv-note,svg.payoff){background:var(--sv-bg-elevated)!important;border-color:var(--sv-border-subtle)!important;color:var(--sv-text-primary)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) table{background:var(--sv-bg-surface)!important;color:var(--sv-text-secondary)!important;border-color:var(--sv-border-subtle)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) thead th{background:var(--sv-bg-muted)!important;color:var(--sv-text-secondary)!important;border-color:var(--sv-border-subtle)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) tbody td{background:var(--sv-bg-elevated)!important;color:var(--sv-text-secondary)!important;border-color:var(--sv-border-subtle)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) tbody tr.hl td{background:var(--sv-bg-info)!important;color:var(--sv-text-primary)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) :is(.sv-chip.success,.sv-badge-success){background:var(--sv-bg-success)!important;color:var(--sv-text-success)!important;border-color:var(--sv-border-success)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) :is(.sv-chip.warning,.sv-badge-warning){background:var(--sv-bg-warning)!important;color:var(--sv-text-warning)!important;border-color:var(--sv-border-warning)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) :is(.sv-chip.danger,.sv-badge-danger){background:var(--sv-bg-danger)!important;color:var(--sv-text-danger)!important;border-color:var(--sv-border-danger)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) svg :is(.ax,.lk,.lg){fill:var(--sv-text-secondary)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) svg :is(rect[fill="#eef2f7"],rect[fill="#f8fafc"],rect[fill="#fff"],rect[fill="#ffffff"]){fill:var(--sv-bg-muted)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv-card,[data-visualize-root].sv-metric,[data-visualize-root] .sv-card,[data-visualize-root] .sv-metric){background:var(--sv-bg-elevated)!important;color:var(--sv-text-primary)!important;border-color:var(--sv-border-subtle)!important}',
+    '[data-theme="dark"] [data-visualize-root] :is(.sv-label,.sv-kicker,.sv-muted){color:var(--sv-text-secondary)!important}',
+    '[data-theme="dark"] [data-visualize-root] .sv-value{color:var(--sv-text-primary)!important}',
+    '[data-theme="dark"] [data-visualize-root] :is(.sv-badge,.sv-action){background:var(--sv-bg-elevated)!important;color:var(--sv-text-primary)!important;border-color:var(--sv-border-subtle)!important}',
+    '[data-theme="dark"] [data-visualize-root] .sv-badge-info{background:var(--sv-bg-info)!important;color:var(--sv-text-info)!important;border-color:var(--sv-border-info)!important}',
+    '[data-theme="dark"] [data-visualize-root] .sv-badge-success{background:var(--sv-bg-success)!important;color:var(--sv-text-success)!important;border-color:var(--sv-border-success)!important}',
+    '[data-theme="dark"] [data-visualize-root] .sv-badge-warning{background:var(--sv-bg-warning)!important;color:var(--sv-text-warning)!important;border-color:var(--sv-border-warning)!important}',
+    '[data-theme="dark"] [data-visualize-root] .sv-badge-danger{background:var(--sv-bg-danger)!important;color:var(--sv-text-danger)!important;border-color:var(--sv-border-danger)!important}',
+  ].join('');
+  const installPlatformNormalize = () => {
+    if (!root) return;
+    let style = root.querySelector('style[data-visualize-platform-normalize]');
+    if (!style) {
+      style = document.createElement('style');
+      style.setAttribute('data-visualize-platform-normalize', '');
+      root.appendChild(style);
+    }
+    style.textContent = platformNormalizeCss;
+  };
   const isTransparentColor = (value) => {
     const color = String(value || '').replace(/\\s+/g, '').toLowerCase();
     if (!color || color === 'transparent') return true;
@@ -94,8 +129,11 @@ export const buildRuntimeDocument = (id: string) => {
     const nodes = visibleContentNodes();
     if (!nodes.length) return 0;
     const rootRect = root.getBoundingClientRect();
-    let bottom = 0;
-    nodes.forEach((node) => {
+    let bottom = Math.max(0, root.scrollHeight);
+    const paintedNodes = nodes.flatMap((node) => [node, ...Array.from(node.querySelectorAll('*'))]);
+    paintedNodes.forEach((node) => {
+      const styles = window.getComputedStyle(node);
+      if (styles.display === 'none' || styles.visibility === 'hidden') return;
       const rect = node.getBoundingClientRect();
       bottom = Math.max(bottom, rect.bottom - rootRect.top);
     });
@@ -342,7 +380,7 @@ export const buildRuntimeDocument = (id: string) => {
     if (final && source.trim()) lastRenderedSource = source;
     const firstContent = visibleContentNodes()[0];
     if (firstContent) firstContent.setAttribute('data-visualize-root', '');
-    root.insertAdjacentHTML('beforeend', '<style data-visualize-platform-normalize>[data-visualize-root]{background:transparent!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;margin-top:0!important;padding-top:0!important}</style>');
+    installPlatformNormalize();
     normalizeSvgInk();
     postSize();
     parent.postMessage({ type: 'visualize-widget:rendered', id: widgetId, hasContent: hasRenderedContent() }, '*');
@@ -422,4 +460,3 @@ export const buildRuntimeDocument = (id: string) => {
     '</html>',
   ].join('\n')
 }
-

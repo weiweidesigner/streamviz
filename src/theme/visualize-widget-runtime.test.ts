@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { STREAM_VISUALIZATION_THEME_TOKEN_NAMES } from '../react/theme'
+import { buildRuntimeDocument } from '../react/runtimeDocument'
 
 const runtimeCss = readFileSync('src/theme/visualize-widget-runtime.css', 'utf8')
 const utilitiesCss = readFileSync('src/theme/visualize-widget-utilities.css', 'utf8')
@@ -134,5 +135,15 @@ describe('visualize widget runtime palette', () => {
     expect(hostCss).toContain('justify-content: flex-end')
     expect(hostCss).not.toContain('@apply')
     expect(hostCss).not.toContain('@tailwind')
+  })
+
+  it('normalizes full-width report roots and legacy dark-theme surfaces after widget CSS', () => {
+    const document = buildRuntimeDocument('theme-compat-test')
+    expect(document).toContain('[data-visualize-root]{width:100%!important')
+    expect(document).toContain('max-height:none!important')
+    expect(document).toContain('[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv)')
+    expect(document).toContain('--ink:var(--sv-text-primary)!important')
+    expect(document).toContain('tbody td{background:var(--sv-bg-elevated)!important')
+    expect(document).toContain('style.setAttribute(\'data-visualize-platform-normalize\', \'\')')
   })
 })

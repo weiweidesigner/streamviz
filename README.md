@@ -143,6 +143,8 @@ Unspecified tokens retain their built-in values. The public `--sv-*` semantic va
 
 Themes can change colors, fonts, radii, and chart series. They cannot replace sandboxing, sanitization, streaming visibility, iframe measurement, or other runtime behavior.
 
+The runtime also repairs common legacy artifact conventions in dark mode. Reports rooted at `.sv` that define fixed light `--ink`, `--sub`, `--line`, or `--card` values are remapped to semantic theme tokens, including their cards, tables, badges, and common SVG labels. New artifacts should still use the public `--sv-*` tokens directly.
+
 See the [API reference](./docs/API.md) for the complete theme token type.
 
 ## Host adapters

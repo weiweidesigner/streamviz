@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Removed the renderer and height-cache caps so long reports are no longer clipped.
+- Allowed final measurements to shrink after scripts settle, preventing stale blank space below artifacts.
+- Normalized report roots to the full host width and removed legacy centered canvas gutters.
+- Added a dark-theme compatibility layer for legacy `.sv` reports with fixed light surfaces, text, tables, badges, and SVG labels.
+- Tightened authoring guidance for chart gutters, bar-label contrast, and connected line series.
+
 ## 0.1.1
 
 - Pointed the npm package homepage to the live StreamViz website and playground.
