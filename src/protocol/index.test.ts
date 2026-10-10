@@ -80,6 +80,8 @@ describe('streamviz protocol', () => {
     expect(readme).toContain('Do not invent per-chart hex colors')
     expect(readme).toContain('bar edge touching the zero/category axis square')
     expect(readme).toContain('round only its free outer end')
+    expect(readme).toContain('Vertical positive bars round only the top')
+    expect(readme).toContain('vertical negative bars round only the bottom')
     expect(readme).not.toContain('Use hardcoded hex or Chart.js defaults')
   })
 })
