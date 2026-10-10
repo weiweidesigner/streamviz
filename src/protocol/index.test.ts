@@ -78,6 +78,8 @@ describe('streamviz protocol', () => {
 
     expect(readme).toContain('--sv-chart-series-')
     expect(readme).toContain('Do not invent per-chart hex colors')
+    expect(readme).toContain('bar edge touching the zero/category axis square')
+    expect(readme).toContain('round only its free outer end')
     expect(readme).not.toContain('Use hardcoded hex or Chart.js defaults')
   })
 })
