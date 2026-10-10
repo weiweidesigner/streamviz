@@ -12,7 +12,7 @@
 - Added final-size guidance for non-scaling strokes, markers, bar thickness, and corner radii in responsive SVG charts.
 - Added fixed vertical-rhythm guidance and HTML/CSS grid recommendations for long horizontal rankings on wide screens.
 - Required axis-adjacent bar ends to stay square while rounding only the free outer end.
-- Moved the default chart-legend position below the plot and outside the rendering surface.
+- Moved the default chart-legend position below the plot, centered it as a group, and kept it outside the rendering surface.
 
 ## 0.1.1
 
