@@ -81,6 +81,7 @@ describe('streamviz protocol', () => {
     expect(readme).toContain('bar edge touching the zero/category axis square')
     expect(readme).toContain('round only its free outer end')
     expect(readme).toContain("must not shrink the plot")
+    expect(readme).toContain('container-query font-size compensation')
     expect(readme).toContain('Vertical positive bars round only the top')
     expect(readme).toContain('vertical negative bars round only the bottom')
     expect(readme).toContain('Place the legend below the plot by default')

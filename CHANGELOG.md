@@ -15,6 +15,7 @@
 - Moved the default chart-legend position below the plot, centered it as a group, and kept it outside the rendering surface.
 - Clarified that reducing chart-card whitespace must preserve a dominant plot area and use a viewBox sized for the chart's actual column width.
 - Removed duplicated bottom spacing between SVG axis-label bands and external legends.
+- Added responsive SVG text compensation for wide share captures without reducing plot geometry.
 - Prevented short chart cards in side-by-side grids from stretching to the height of taller neighbors.
 
 ## 0.1.1
