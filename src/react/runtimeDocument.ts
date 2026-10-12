@@ -146,7 +146,8 @@ export const buildRuntimeDocument = (id: string) => {
       style.setAttribute('data-visualize-platform-normalize', '');
       root.appendChild(style);
     }
-    style.textContent = platformNormalizeCss;
+    // Reinstall the shared contract after model styles on every streamed update.
+    style.textContent = platformNormalizeCss + ${JSON.stringify(String(importedArtifactThemeCss || ''))};
   };
   const isTransparentColor = (value) => {
     const color = String(value || '').replace(/\\s+/g, '').toLowerCase();
