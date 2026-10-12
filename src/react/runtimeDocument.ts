@@ -1,6 +1,7 @@
 import importedVisualizeWidgetRuntimeCss from '../theme/visualize-widget-runtime.css?raw'
 import importedVisualizeWidgetUtilitiesCss from '../theme/visualize-widget-utilities.css?raw'
 import importedArtifactThemeCss from '../theme/artifact-theme.css?raw'
+import { reconcileArtifactDom } from './reconcileArtifactDom'
 
 const VISUALIZE_WIDGET_RUNTIME_CSS_FALLBACK = [
   ':root{',
@@ -22,6 +23,10 @@ export const buildRuntimeDocument = (id: string) => {
   let lastExecuted = '';
   let lastRenderedSource = '';
   let lastRenderedTitle = '';
+  let lastRenderedFinal = false;
+  const reconcileArtifactDom = ${reconcileArtifactDom.toString()};
+  let pendingUpdate = null;
+  let renderFrame = 0;
   const blockedElements = new Set(['iframe', 'object', 'embed', 'base']);
   const urlAttributes = new Set(['href', 'src', 'xlink:href', 'formaction', 'poster']);
   const allowedResourceOrigins = new Set([
@@ -148,6 +153,7 @@ export const buildRuntimeDocument = (id: string) => {
     }
     // Reinstall the shared contract after model styles on every streamed update.
     style.textContent = platformNormalizeCss + ${JSON.stringify(String(importedArtifactThemeCss || ''))};
+    root.appendChild(style);
   };
   const isTransparentColor = (value) => {
     const color = String(value || '').replace(/\\s+/g, '').toLowerCase();
@@ -404,7 +410,7 @@ export const buildRuntimeDocument = (id: string) => {
   const sanitizeAndRender = (html, final, title) => {
     const source = String(html || '');
     const reportTitle = String(title || '').trim();
-    if (final && source.trim() && source === lastRenderedSource && reportTitle === lastRenderedTitle) {
+    if (source.trim() && source === lastRenderedSource && reportTitle === lastRenderedTitle && Boolean(final) === lastRenderedFinal) {
       postSize();
       parent.postMessage({ type: 'visualize-widget:rendered', id: widgetId, hasContent: hasRenderedContent() }, '*');
       return;
@@ -420,16 +426,19 @@ export const buildRuntimeDocument = (id: string) => {
       parent.postMessage({ type: 'visualize-widget:rendered', id: widgetId, hasContent: true }, '*');
       return;
     }
-    root.innerHTML = nextHtml;
+    const fragment = document.createElement('template');
+    fragment.innerHTML = nextHtml;
     if (reportTitle) {
       const heading = document.createElement('h2');
       heading.setAttribute('data-visualize-title', '');
       heading.textContent = reportTitle;
-      root.prepend(heading);
+      fragment.content.prepend(heading);
     }
-    if (final && source.trim()) {
+    reconcileArtifactDom(root, fragment.content);
+    if (source.trim()) {
       lastRenderedSource = source;
       lastRenderedTitle = reportTitle;
+      lastRenderedFinal = Boolean(final);
     }
     const firstContent = visibleContentNodes()[0];
     if (firstContent) firstContent.setAttribute('data-visualize-root', '');
@@ -477,7 +486,13 @@ export const buildRuntimeDocument = (id: string) => {
     }
     if (data.type !== 'visualize-widget:update') return;
     applyHostCssVars(data.cssVars, data.theme);
-    sanitizeAndRender(data.html, Boolean(data.final), data.title);
+    pendingUpdate = data;
+    if (!renderFrame) renderFrame = requestAnimationFrame(() => {
+      renderFrame = 0;
+      const data = pendingUpdate;
+      pendingUpdate = null;
+      sanitizeAndRender(data.html, Boolean(data.final), data.title);
+    });
   });
   window.addEventListener('load', postSize);
   window.addEventListener('resize', postSize);
