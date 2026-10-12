@@ -74,7 +74,7 @@ describe('StreamVisualization', () => {
     expect(host.querySelector('iframe')).toBeInstanceOf(HTMLIFrameElement)
   })
 
-  it('releases the first non-empty code fragment when loading dwell is disabled', async () => {
+  it('waits for balanced content even when loading dwell is disabled', async () => {
     await act(async () => {
       root.render(
         <StreamVisualization
@@ -88,8 +88,12 @@ describe('StreamVisualization', () => {
       )
     })
 
-    expect(host.querySelector('.visualize-widget-block')?.classList).toContain('is-ready')
+    expect(host.querySelector('.visualize-widget-block')?.classList).toContain('is-loading')
     expect(host.querySelector('iframe')).toBeInstanceOf(HTMLIFrameElement)
+    await act(async () => {
+      root.render(<StreamVisualization title="Streaming shell" code='<section class="card"><h2>Ready</h2></section><section class="card"><h2>Pending' loadingDwellMs={0} final={false} />)
+    })
+    expect(host.querySelector('.visualize-widget-block')?.classList).toContain('is-ready')
   })
 
   it('falls back to the system color scheme when the host has no explicit theme', async () => {
@@ -203,14 +207,14 @@ describe('StreamVisualization', () => {
     expect(host.querySelectorAll('svg.visualize-widget-action-icon')).toHaveLength(2)
   })
 
-  it('uses the full measured height and can shrink after the final render settles', async () => {
+  it.each([false, true])('uses measured height and can shrink with final=%s', async (final) => {
     await act(async () => {
       root.render(
         <StreamVisualization
           title="Long report"
           code={finalCode}
           exportCode={finalCode}
-          final
+          final={final}
         />,
       )
     })
