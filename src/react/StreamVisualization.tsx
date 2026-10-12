@@ -139,12 +139,12 @@ export default function StreamVisualization({
       setRenderReleased(false)
       return undefined
     }
-    if (loadingDwellMs <= 0) {
-      setRenderReleased(true)
-      return undefined
-    }
     if (!hasRenderableCode && !final) {
       setRenderReleased(false)
+      return undefined
+    }
+    if (loadingDwellMs <= 0) {
+      setRenderReleased(true)
       return undefined
     }
     if (final) {
