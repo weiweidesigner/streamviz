@@ -89,7 +89,7 @@ describe('StreamVisualization', () => {
     })
 
     expect(host.querySelector('.visualize-widget-block')?.classList).toContain('is-loading')
-    expect(host.querySelector('iframe')).toBeInstanceOf(HTMLIFrameElement)
+    expect(host.querySelector('iframe')).toBeNull()
     await act(async () => {
       root.render(<StreamVisualization title="Streaming shell" code='<section class="card"><h2>Ready</h2></section><section class="card"><h2>Pending' loadingDwellMs={0} final={false} />)
     })
@@ -214,6 +214,7 @@ describe('StreamVisualization', () => {
           title="Long report"
           code={finalCode}
           exportCode={finalCode}
+          loadingDwellMs={0}
           final={final}
         />,
       )
