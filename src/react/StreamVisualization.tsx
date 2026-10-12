@@ -4,6 +4,7 @@ import {
   getCachedVisualizeWidgetHeight,
   setCachedVisualizeWidgetHeight,
   visualizeWidgetSourceKey,
+  completeStreamHtml,
 } from '../core'
 import { buildExportDocument, downloadTextFile, safeExportName, writePngDataUrlToClipboard } from './export'
 import { clampHeight, estimateWidgetHeight, widgetSourceHasRenderableContent } from './content'
@@ -49,7 +50,8 @@ export default function StreamVisualization({
   const [cssVars, setCssVars] = useState('')
   const sourceKey = useMemo(() => visualizeWidgetSourceKey(exportCode || code), [code, exportCode])
   const hasCode = String(code || '').trim().length > 0
-  const hasRenderableCode = useMemo(() => widgetSourceHasRenderableContent(code), [code])
+  const stableCode = useMemo(() => final ? code : completeStreamHtml(code), [code, final])
+  const hasRenderableCode = useMemo(() => widgetSourceHasRenderableContent(stableCode), [stableCode])
   const [height, setHeight] = useState(() =>
     getCachedVisualizeWidgetHeight(sourceKey) || VISUALIZE_WIDGET_MIN_HEIGHT
   )
@@ -87,7 +89,7 @@ export default function StreamVisualization({
   }, [providedLoadingMessages])
   const effectiveLoadingMessages = lockedLoadingMessages || incomingLoadingMessages
   const activeLoadingMessage = effectiveLoadingMessages[loadingMessageIndex % effectiveLoadingMessages.length] || DEFAULT_VISUALIZE_LOADING_MESSAGE
-  const displayCode = renderReleased ? code : ''
+  const displayCode = renderReleased ? stableCode : ''
   const hasDisplayCode = String(displayCode || '').trim().length > 0
   const loading = !hasDisplayCode
   const actionsVisible = showActions && final && rendered && hasDisplayCode
@@ -253,10 +255,9 @@ export default function StreamVisualization({
     const displayHeightKey = visualizeWidgetSourceKey(displayCode)
     const measuredHeight = measuredHeightKeyRef.current === displayHeightKey ? measuredHeightRef.current : null
     const cachedHeight = sourceKey ? getCachedVisualizeWidgetHeight(sourceKey) : null
-    const estimatedHeight = measuredHeight || cachedHeight || estimateWidgetHeight(exportCode || displayCode, final)
+    const estimatedHeight = measuredHeight || cachedHeight || estimateWidgetHeight(displayCode, final)
     setHeight((previous) => {
       if (Math.abs(previous - estimatedHeight) <= 2) return previous
-      if (!final && previous > estimatedHeight) return previous
       return estimatedHeight
     })
     if (!hasDisplayCode) setRendered(false)
