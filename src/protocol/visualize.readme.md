@@ -28,7 +28,7 @@ These rules apply to ALL use cases.
 - **Seamless**: Users shouldn't notice where the host app ends and your widget begins.
 - **Flat**: No gradients, mesh backgrounds, noise textures, or decorative effects. Clean flat surfaces.
 - **Compact**: Show the essential inline. Explain the rest in text.
-- **Text goes in your response, visuals go in the tool** — All explanatory text, descriptions, introductions, and summaries must be written as normal response text OUTSIDE the tool call. The tool output should contain ONLY the visual element (diagram, chart, interactive widget). Never put paragraphs of explanation, section headings, or descriptive prose inside the HTML/SVG. If the user asks "explain X", write the explanation in your response and use the tool only for the visual that accompanies it. The user's font settings only apply to your response text, not to text inside the widget.
+- **Report content belongs to the widget** — For a report, dashboard, or chart with a conclusion, pass its concise report title in the tool's `title` field. StreamViz renders that title inside the themed artifact. Put any subtitle, key finding, labels, and annotations that visually belong with the artifact in the HTML/SVG too. The normal response may add conversational context, but must not repeat the report title or split a report heading from its artifact. Keep long-form explanation in the response.
 
 ### Streaming
 Output streams token-by-token. Structure code so useful content appears early.
@@ -49,12 +49,13 @@ Output streams token-by-token. Structure code so useful content appears early.
 - **Sentence case** always. Never Title Case, never ALL CAPS. This applies everywhere including SVG text labels and diagram headings.
 - **No mid-sentence bolding**, including in your response text around the tool call. Entity names, class names, function names go in `code style` not **bold**. Bold is for headings and labels only.
 - The widget container is `display: block; width: 100%`. Your HTML fills it naturally — no wrapper div needed. Just start with your content directly. If you want vertical breathing room, add `padding: 1rem 0` on your first element.
+- Do not put `max-width`, `margin-inline: auto`, or decorative horizontal padding on the outer report element. The report edge must align with surrounding host text; reserve internal space only where axes or labels require it.
 - Never use `position: fixed` — the iframe viewport sizes itself to your in-flow content height, so fixed-positioned elements (modals, overlays, tooltips) collapse it to `min-height: 100px`. For modal/overlay mockups: wrap everything in a normal-flow `<div style="min-height: 400px; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center;">` and put the modal inside — it's a faux viewport that actually contributes layout height.
 - No DOCTYPE, `<html>`, `<head>`, or `<body>` — just content fragments.
 - When placing text on a colored background (badges, pills, cards, tags), use the darkest shade from that same color family for the text — never plain black or generic gray.
 - **Corners**: use `border-radius: var(--border-radius-md)` (or `-lg` for cards) in HTML. In SVG, `rx="4"` is the default — larger values make pills, use only when you mean a pill.
 - **No rounded corners on single-sided borders** — if using `border-left` or `border-top` accents, set `border-radius: 0`. Rounded corners only work with full borders on all sides.
-- **No titles or prose inside the tool output** — see Philosophy above.
+- **Do not duplicate the report title in HTML** — StreamViz renders the tool `title` as the artifact's themed heading. Do not add another top-level `h1`/`h2` for the same title. Short subtitles, labels, and report-local explanatory text are allowed when they are part of the visual.
 - **Icon sizing**: Tabler `<i class="ti …">` sizes with `font-size` — 16–20px inline, 24px max decorative. For one-off inline SVG icons, set `width`/`height` explicitly (same limits).
 - No tabs, carousels, or `display: none` sections during streaming — hidden content streams invisibly. Show all content stacked vertically. (Post-streaming JS-driven steppers are fine — see Illustrative/Interactive sections.)
 - No nested scrolling — auto-fit height.
@@ -250,6 +251,17 @@ For status/semantic meaning in UI (success, warning, danger) use CSS variables. 
 - Wrap `<canvas>` in `<div>` with explicit `height` and `position: relative`.
 - **Canvas sizing**: set height ONLY on the wrapper div, never on the canvas element itself. Use position: relative on the wrapper and responsive: true, maintainAspectRatio: false in Chart.js options. Never set CSS height directly on canvas — this causes wrong dimensions, especially for horizontal bar charts.
 - For horizontal bar charts: wrapper div height should be at least (number_of_bars * 40) + 80 pixels.
+- Keep plot-area padding tight. Reserve only enough left/right space for the longest axis or outside value label; do not center a narrow plot inside a full-width report.
+- Put bar value labels outside the bar by default. If a label must sit inside a bar, switch it to a theme-safe contrasting color and keep enough inset from the bar edge.
+- Do not stretch a small fixed-viewBox SVG to fill an unbounded wide container. SVG text scales with the geometry and can become visually larger than nearby HTML headings. Design the SVG near its final rendered width, or use responsive HTML/CSS bars when labels must keep CSS pixel sizes.
+- Reducing a chart card's outer or inner whitespace must not shrink the plot. Tighten card padding and unused viewBox gutters while keeping the plot visually dominant, normally 75–90% of the card width with enough height for marks and labels. For a chart inside a side-by-side half-width card, design the viewBox near that half-card's actual rendered width instead of reusing a full-page-wide coordinate system that scales the entire chart down.
+- Account for wider share captures too. When a half-width SVG can grow materially beyond its design width, use container-query font-size compensation so final axis/category labels remain 11–13px and data labels remain 12–14px. Compensate SVG text only; do not shrink the plot, bars, or card.
+- Preserve the final rendered type hierarchy: chart title 16–18px, data labels 12–14px, and axis/category labels 11–13px. Axis and data labels must never appear larger than the chart title.
+- The same scaling risk applies to strokes, markers, bar thickness, and corner radii. Add `vector-effect="non-scaling-stroke"` to SVG lines, paths, and polylines; target about 1px final gridlines, 1.5–2.5px primary-series strokes, 3–5px marker radii, 20–32px ordinary bar thickness, and 2–4px final corner radii. Keep the bar edge touching the zero/category axis square and round only its free outer end. Vertical positive bars round only the top, vertical negative bars round only the bottom, and horizontal positive/negative bars use opposite outer-end radii. Use HTML/CSS bars when a responsive SVG cannot maintain those dimensions.
+- Do not let wide-SVG aspect-ratio scaling control vertical rhythm. Keep ranked rows 36–44px high with 8–12px gaps, chart-card padding 16–24px, and section gaps 24–32px at every viewport. For ranked horizontal bars with more than seven categories, prefer a responsive HTML/CSS grid so only plot width grows while row height and spacing stay fixed.
+- In side-by-side CSS Grid layouts, set `align-items: start` so a short chart card keeps its intrinsic height instead of stretching to match a taller text or table card and creating a blank lower region.
+- Long categorical x-axis labels get a dedicated band and at most two centered `tspan` lines. If they still collide, switch to horizontal bars or a compact table; never overlap, clip, or densely rotate labels to force them in.
+- A line dataset must render an actual connecting stroke (`showLine: true`, a visible `borderWidth`, and one consistent dataset). Do not approximate a line chart with disconnected point markers.
 - Load UMD build via `<script src="https://cdnjs.cloudflare.com/ajax/libs/...">` — sets `window.Chart` global. Follow with plain `<script>` (no `type="module"`).
 - Multiple charts: use unique IDs (`myChart1`, `myChart2`). Each gets its own canvas+div pair.
 - For bubble and scatter charts: bubble radii extend past their center points, so points near axis boundaries get clipped. Pad the scale range — set `scales.y.min` and `scales.y.max` ~10% beyond your data range (same for x). Or use `layout: { padding: 20 }` as a blunt fallback.
@@ -264,13 +276,14 @@ plugins: { legend: { display: false } }
 ```
 
 ```html
-<div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 8px; font-size: 12px; color: var(--sv-text-secondary);">
+<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: 10px; font-size: 12px; color: var(--sv-text-secondary);">
   <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 10px; height: 10px; border-radius: 2px; background: var(--sv-chart-series-1);"></span>Chrome 65%</span>
   <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 10px; height: 10px; border-radius: 2px; background: var(--sv-chart-series-2);"></span>Safari 18%</span>
 </div>
 ```
 
-Include the value/percentage in each label when the data is categorical (pie, donut, single-series bar). Position the legend above the chart (`margin-bottom`) or below (`margin-top`) — not inside the canvas.
+Include the value/percentage in each label when the data is categorical (pie, donut, single-series bar). Place the legend below the plot by default with 8–12px of top margin, outside the SVG/canvas, and center the legend items as a group. Put it above only when the lower position would separate it from the chart or collide with required annotations. Never overlay the legend on the plot.
+When a legend sits below an SVG, end the viewBox immediately after the x-axis label band. Do not keep an extra empty bottom band inside the SVG and then add legend margin on top of it; keep the visible distance from the final label baseline to the legend around 8–16px.
 
 **Dashboard layout** — wrap summary numbers in metric cards (see UI fragment) above the chart. Chart canvas flows below without a card wrapper. Use `sendPrompt()` for drill-down: `sendPrompt('Break down Q4 by region')`.
 

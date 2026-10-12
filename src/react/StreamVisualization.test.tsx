@@ -120,7 +120,7 @@ describe('StreamVisualization', () => {
     })
 
     expect(matchMedia).toHaveBeenCalledWith('(prefers-color-scheme: dark)')
-    expect(postMessage).toHaveBeenCalledWith(expect.objectContaining({ theme: 'light' }), '*')
+    expect(postMessage).toHaveBeenCalledWith(expect.objectContaining({ theme: 'light', title: 'Release readiness' }), '*')
     Reflect.deleteProperty(window, 'matchMedia')
   })
 
@@ -201,6 +201,39 @@ describe('StreamVisualization', () => {
     expect(host.querySelector('.visualize-widget-actions')).toBeInstanceOf(HTMLDivElement)
     expect(host.querySelectorAll('.visualize-widget-action')).toHaveLength(2)
     expect(host.querySelectorAll('svg.visualize-widget-action-icon')).toHaveLength(2)
+  })
+
+  it('uses the full measured height and can shrink after the final render settles', async () => {
+    await act(async () => {
+      root.render(
+        <StreamVisualization
+          title="Long report"
+          code={finalCode}
+          exportCode={finalCode}
+          final
+        />,
+      )
+    })
+
+    const iframe = host.querySelector('iframe') as HTMLIFrameElement
+    const widgetId = parseWidgetId(iframe)
+    const panel = host.querySelector('.visualize-widget-panel') as HTMLDivElement
+
+    await act(async () => {
+      window.dispatchEvent(new MessageEvent('message', {
+        data: { type: 'visualize-widget:size', id: widgetId, height: 4200, hasContent: true },
+        source: iframe.contentWindow,
+      }))
+    })
+    expect(panel.style.getPropertyValue('--visualize-widget-height')).toBe('4200px')
+
+    await act(async () => {
+      window.dispatchEvent(new MessageEvent('message', {
+        data: { type: 'visualize-widget:size', id: widgetId, height: 900, hasContent: true },
+        source: iframe.contentWindow,
+      }))
+    })
+    expect(panel.style.getPropertyValue('--visualize-widget-height')).toBe('900px')
   })
 
   it('can hide final actions for passive previews', async () => {

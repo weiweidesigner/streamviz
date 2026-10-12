@@ -1,4 +1,4 @@
-export const clampHeight = (value: number, min: number, max: number) =>
+export const clampHeight = (value: number, min: number, max = Number.POSITIVE_INFINITY) =>
   Math.min(max, Math.max(min, Math.ceil(value)))
 
 export const estimateWidgetHeight = (source: string, final: boolean) => {

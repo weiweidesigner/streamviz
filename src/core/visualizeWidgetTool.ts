@@ -2,7 +2,6 @@ type AnyRecord = Record<string, any>
 
 const visualizeWidgetHeightCache = new Map<string, number>()
 const VISUALIZE_WIDGET_HEIGHT_STORAGE_PREFIX = 'visualize-widget-height:'
-const VISUALIZE_WIDGET_MAX_CACHED_HEIGHT = 3600
 const DEFAULT_VISUALIZE_LOADING_MESSAGE = '正在生成可视化代码'
 
 const isObject = (value: unknown): value is AnyRecord =>
@@ -24,15 +23,14 @@ export const getCachedVisualizeWidgetHeight = (key: string) => {
   if (!normalizedKey) return null
   const memoryHeight = visualizeWidgetHeightCache.get(normalizedKey)
   if (typeof memoryHeight === 'number' && Number.isFinite(memoryHeight) && memoryHeight > 0) {
-    return Math.min(memoryHeight, VISUALIZE_WIDGET_MAX_CACHED_HEIGHT)
+    return memoryHeight
   }
   if (typeof window === 'undefined' || !window.localStorage) return null
   try {
     const stored = Number(window.localStorage.getItem(`${VISUALIZE_WIDGET_HEIGHT_STORAGE_PREFIX}${normalizedKey}`))
     if (Number.isFinite(stored) && stored > 0) {
-      const trusted = Math.min(stored, VISUALIZE_WIDGET_MAX_CACHED_HEIGHT)
-      visualizeWidgetHeightCache.set(normalizedKey, trusted)
-      return trusted
+      visualizeWidgetHeightCache.set(normalizedKey, stored)
+      return stored
     }
   } catch (_error) {
     return null
@@ -42,7 +40,7 @@ export const getCachedVisualizeWidgetHeight = (key: string) => {
 
 export const setCachedVisualizeWidgetHeight = (key: string, value: number) => {
   const normalizedKey = String(key || '')
-  const normalizedValue = Math.min(Math.ceil(Number(value) || 0), VISUALIZE_WIDGET_MAX_CACHED_HEIGHT)
+  const normalizedValue = Math.ceil(Number(value) || 0)
   if (!normalizedKey || normalizedValue <= 0) return
   visualizeWidgetHeightCache.set(normalizedKey, normalizedValue)
   if (typeof window === 'undefined' || !window.localStorage) return

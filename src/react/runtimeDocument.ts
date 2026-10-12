@@ -1,5 +1,6 @@
 import importedVisualizeWidgetRuntimeCss from '../theme/visualize-widget-runtime.css?raw'
 import importedVisualizeWidgetUtilitiesCss from '../theme/visualize-widget-utilities.css?raw'
+import importedArtifactThemeCss from '../theme/artifact-theme.css?raw'
 
 const VISUALIZE_WIDGET_RUNTIME_CSS_FALLBACK = [
   ':root{',
@@ -20,6 +21,7 @@ export const buildRuntimeDocument = (id: string) => {
   const root = document.getElementById('root');
   let lastExecuted = '';
   let lastRenderedSource = '';
+  let lastRenderedTitle = '';
   const blockedElements = new Set(['iframe', 'object', 'embed', 'base']);
   const urlAttributes = new Set(['href', 'src', 'xlink:href', 'formaction', 'poster']);
   const allowedResourceOrigins = new Set([
@@ -70,7 +72,82 @@ export const buildRuntimeDocument = (id: string) => {
     parent.postMessage({ type: 'visualize-widget:send-prompt', id: widgetId, prompt }, '*');
   };
   const visibleContentNodes = () =>
-    Array.from(root?.children || []).filter((node) => !['STYLE', 'SCRIPT', 'TEMPLATE', 'TITLE', 'META', 'LINK'].includes(node.tagName));
+    Array.from(root?.children || []).filter((node) =>
+      !['STYLE', 'SCRIPT', 'TEMPLATE', 'TITLE', 'META', 'LINK'].includes(node.tagName)
+      && !node.hasAttribute('data-visualize-title')
+    );
+  const platformNormalizeCss = [
+    '[data-visualize-root]{width:100%!important;min-width:0!important;max-width:none!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;margin:0!important;padding-top:0!important;background:transparent!important}',
+    '[data-visualize-root]>:is(section,main,article,div):first-child{width:100%!important;min-width:0!important;max-width:none!important;margin-left:0!important;margin-right:0!important}',
+    '[data-visualize-title]{display:block!important;margin:0 0 var(--sv-space-3)!important;padding:0!important;background:transparent!important;color:var(--sv-text-primary)!important;font:500 22px/1.35 var(--sv-font-sans)!important;letter-spacing:normal!important}',
+    '[data-theme="light"] [data-visualize-root] :is(h1,h2,h3,h4,h5,h6){color:var(--sv-text-primary)!important}',
+    '[data-theme="light"] [data-visualize-root] table{background:var(--sv-bg-surface)!important;border-color:var(--sv-border-subtle)!important}',
+    '[data-theme="light"] [data-visualize-root] :is(thead,tbody,tr){background:transparent!important}',
+    '[data-theme="light"] [data-visualize-root] :is(th,td){border-color:var(--sv-border-subtle)!important}',
+    '[data-theme="light"] [data-visualize-root] th{background:var(--sv-bg-muted)!important;color:var(--sv-text-secondary)!important}',
+    '[data-theme="light"] [data-visualize-root] td{background:var(--sv-bg-elevated)!important}',
+    '[data-theme="light"] [data-visualize-root] td:first-child{color:var(--sv-text-secondary)!important}',
+    '[data-theme="light"] :is([data-visualize-root].sv,[data-visualize-root] .sv,[data-visualize-root].svv,[data-visualize-root] .svv){--ink:var(--sv-text-primary)!important;--sub:var(--sv-text-secondary)!important;--line:var(--sv-border-subtle)!important;--card:var(--sv-bg-elevated)!important;--card2:var(--sv-bg-surface)!important;--text:var(--sv-text-primary)!important;--muted:var(--sv-text-secondary)!important;--bg:transparent!important;background:transparent!important;color:var(--sv-text-primary)!important}',
+    '[data-theme="light"] :is([data-visualize-root].sv,[data-visualize-root] .sv,[data-visualize-root].svv,[data-visualize-root] .svv) :is(h1,h2,h3,h4,h5,h6,b,strong,.sv-title,.sv-value,.v){color:var(--sv-text-primary)!important}',
+    '[data-theme="light"] :is([data-visualize-root].svv,[data-visualize-root] .svv){border-color:var(--sv-border-subtle)!important;box-shadow:none!important}',
+    '[data-theme="light"] :is([data-visualize-root].svv,[data-visualize-root] .svv) :is(.sub,.lg,ul,[style*="color:#b9c6dc"]){color:var(--sv-text-secondary)!important}',
+    '[data-theme="light"] :is([data-visualize-root].svv,[data-visualize-root] .svv) :is(.chart,.table-wrap){background:transparent!important}',
+    '[data-theme="light"] :is([data-visualize-root].svv,[data-visualize-root] .svv) :is(.panel,.rank-html){background:var(--sv-bg-surface)!important;border-color:var(--sv-border-subtle)!important}',
+    '[data-theme="light"] :is([data-visualize-root].svv,[data-visualize-root] .svv) svg text[fill="#e8eefb"]{fill:var(--sv-text-primary)!important}',
+    '[data-theme="light"] :is([data-visualize-root].svv,[data-visualize-root] .svv) svg text[fill="#93a4bd"]{fill:var(--sv-text-secondary)!important}',
+    '[data-theme="light"] :is([data-visualize-root].svv,[data-visualize-root] .svv) svg :is(line,path)[stroke="#233247"]{stroke:var(--sv-border-subtle)!important}',
+    '[data-theme="light"] :is([data-visualize-root].sv,[data-visualize-root] .sv) :is(p,li,.sv-sum,.pp-sub,.two p,ol.steps,.sv-label,.sv-muted,.k,.d){color:var(--sv-text-secondary)!important}',
+    '[data-theme="light"] :is([data-visualize-root].sv,[data-visualize-root] .sv) :is(.sv-card,.sv-metric,.pp-tabs>div,.sv-narr>div,.sv-note,svg.payoff){background:var(--sv-bg-elevated)!important;border-color:var(--sv-border-subtle)!important;color:var(--sv-text-primary)!important}',
+    '[data-theme="light"] :is([data-visualize-root].sv,[data-visualize-root] .sv) table{background:var(--sv-bg-surface)!important;color:var(--sv-text-secondary)!important;border-color:var(--sv-border-subtle)!important}',
+    '[data-theme="light"] :is([data-visualize-root].sv,[data-visualize-root] .sv) thead th{background:var(--sv-bg-muted)!important;color:var(--sv-text-secondary)!important;border-color:var(--sv-border-subtle)!important}',
+    '[data-theme="light"] :is([data-visualize-root].sv,[data-visualize-root] .sv) tbody td{background:var(--sv-bg-elevated)!important;color:var(--sv-text-secondary)!important;border-color:var(--sv-border-subtle)!important}',
+    '[data-theme="light"] :is([data-visualize-root].sv,[data-visualize-root] .sv) tbody tr.hl td{background:var(--sv-bg-info)!important;color:var(--sv-text-primary)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv,[data-visualize-root].svv,[data-visualize-root] .svv){--ink:var(--sv-text-primary)!important;--sub:var(--sv-text-secondary)!important;--line:var(--sv-border-subtle)!important;--card:var(--sv-bg-elevated)!important;--card2:var(--sv-bg-surface)!important;--text:var(--sv-text-primary)!important;--muted:var(--sv-text-secondary)!important;color:var(--sv-text-primary)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].svv,[data-visualize-root] .svv){--bg:transparent!important;background:transparent!important;border-color:var(--sv-border-subtle)!important;box-shadow:none!important}',
+    '[data-theme="dark"] :is([data-visualize-root].svv,[data-visualize-root] .svv) :is(.sub,.lg,ul,[style*="color:#b9c6dc"]){color:var(--sv-text-secondary)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].svv,[data-visualize-root] .svv) :is(.chart,.table-wrap){background:transparent!important}',
+    '[data-theme="dark"] :is([data-visualize-root].svv,[data-visualize-root] .svv) :is(.panel,.rank-html){background:var(--sv-bg-elevated)!important;border-color:var(--sv-border-subtle)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].svv,[data-visualize-root] .svv) svg text[fill="#e8eefb"]{fill:var(--sv-text-primary)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].svv,[data-visualize-root] .svv) svg text[fill="#93a4bd"]{fill:var(--sv-text-secondary)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].svv,[data-visualize-root] .svv) svg :is(line,path)[stroke="#233247"]{stroke:var(--sv-border-subtle)!important}',
+    '[data-theme="dark"] [data-visualize-root] :is(h1,h2,h3,h4,h5,h6){color:var(--sv-text-primary)!important}',
+    '[data-theme="dark"] [data-visualize-root] table{background:var(--sv-bg-surface)!important;border-color:var(--sv-border-subtle)!important}',
+    '[data-theme="dark"] [data-visualize-root] :is(thead,tbody,tr){background:transparent!important}',
+    '[data-theme="dark"] [data-visualize-root] :is(th,td){border-color:var(--sv-border-subtle)!important}',
+    '[data-theme="dark"] [data-visualize-root] th{background:var(--sv-bg-muted)!important;color:var(--sv-text-secondary)!important}',
+    '[data-theme="dark"] [data-visualize-root] td{background:var(--sv-bg-elevated)!important}',
+    '[data-theme="dark"] [data-visualize-root] td:first-child{color:var(--sv-text-secondary)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) :is(h1,h2,h3,h4,h5,h6,b,strong,.sv-title,.sv-value,.v){color:var(--sv-text-primary)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) :is(p,li,.sv-sum,.pp-sub,.two p,ol.steps,.sv-label,.sv-muted,.k,.d){color:var(--sv-text-secondary)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) :is(.sv-card,.sv-metric,.pp-tabs>div,.sv-narr>div,.sv-note,svg.payoff){background:var(--sv-bg-elevated)!important;border-color:var(--sv-border-subtle)!important;color:var(--sv-text-primary)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) table{background:var(--sv-bg-surface)!important;color:var(--sv-text-secondary)!important;border-color:var(--sv-border-subtle)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) thead th{background:var(--sv-bg-muted)!important;color:var(--sv-text-secondary)!important;border-color:var(--sv-border-subtle)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) tbody td{background:var(--sv-bg-elevated)!important;color:var(--sv-text-secondary)!important;border-color:var(--sv-border-subtle)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) tbody tr.hl td{background:var(--sv-bg-info)!important;color:var(--sv-text-primary)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) :is(.sv-chip.success,.sv-badge-success){background:var(--sv-bg-success)!important;color:var(--sv-text-success)!important;border-color:var(--sv-border-success)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) :is(.sv-chip.warning,.sv-badge-warning){background:var(--sv-bg-warning)!important;color:var(--sv-text-warning)!important;border-color:var(--sv-border-warning)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) :is(.sv-chip.danger,.sv-badge-danger){background:var(--sv-bg-danger)!important;color:var(--sv-text-danger)!important;border-color:var(--sv-border-danger)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) svg :is(.ax,.lk,.lg){fill:var(--sv-text-secondary)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv,[data-visualize-root] .sv) svg :is(rect[fill="#eef2f7"],rect[fill="#f8fafc"],rect[fill="#fff"],rect[fill="#ffffff"]){fill:var(--sv-bg-muted)!important}',
+    '[data-theme="dark"] :is([data-visualize-root].sv-card,[data-visualize-root].sv-metric,[data-visualize-root] .sv-card,[data-visualize-root] .sv-metric){background:var(--sv-bg-elevated)!important;color:var(--sv-text-primary)!important;border-color:var(--sv-border-subtle)!important}',
+    '[data-theme="dark"] [data-visualize-root] :is(.sv-label,.sv-kicker,.sv-muted){color:var(--sv-text-secondary)!important}',
+    '[data-theme="dark"] [data-visualize-root] .sv-value{color:var(--sv-text-primary)!important}',
+    '[data-theme="dark"] [data-visualize-root] :is(.sv-badge,.sv-action){background:var(--sv-bg-elevated)!important;color:var(--sv-text-primary)!important;border-color:var(--sv-border-subtle)!important}',
+    '[data-theme="dark"] [data-visualize-root] .sv-badge-info{background:var(--sv-bg-info)!important;color:var(--sv-text-info)!important;border-color:var(--sv-border-info)!important}',
+    '[data-theme="dark"] [data-visualize-root] .sv-badge-success{background:var(--sv-bg-success)!important;color:var(--sv-text-success)!important;border-color:var(--sv-border-success)!important}',
+    '[data-theme="dark"] [data-visualize-root] .sv-badge-warning{background:var(--sv-bg-warning)!important;color:var(--sv-text-warning)!important;border-color:var(--sv-border-warning)!important}',
+    '[data-theme="dark"] [data-visualize-root] .sv-badge-danger{background:var(--sv-bg-danger)!important;color:var(--sv-text-danger)!important;border-color:var(--sv-border-danger)!important}',
+  ].join('');
+  const installPlatformNormalize = () => {
+    if (!root) return;
+    let style = root.querySelector('style[data-visualize-platform-normalize]');
+    if (!style) {
+      style = document.createElement('style');
+      style.setAttribute('data-visualize-platform-normalize', '');
+      root.appendChild(style);
+    }
+    style.textContent = platformNormalizeCss;
+  };
   const isTransparentColor = (value) => {
     const color = String(value || '').replace(/\\s+/g, '').toLowerCase();
     if (!color || color === 'transparent') return true;
@@ -94,8 +171,11 @@ export const buildRuntimeDocument = (id: string) => {
     const nodes = visibleContentNodes();
     if (!nodes.length) return 0;
     const rootRect = root.getBoundingClientRect();
-    let bottom = 0;
-    nodes.forEach((node) => {
+    let bottom = Math.max(0, root.scrollHeight);
+    const paintedNodes = nodes.flatMap((node) => [node, ...Array.from(node.querySelectorAll('*'))]);
+    paintedNodes.forEach((node) => {
+      const styles = window.getComputedStyle(node);
+      if (styles.display === 'none' || styles.visibility === 'hidden') return;
       const rect = node.getBoundingClientRect();
       bottom = Math.max(bottom, rect.bottom - rootRect.top);
     });
@@ -109,7 +189,7 @@ export const buildRuntimeDocument = (id: string) => {
   const hasRenderedContent = () => {
     if (!root) return false;
     const clone = root.cloneNode(true);
-    clone.querySelectorAll?.('style,script,template,title,meta,link').forEach((node) => node.remove());
+    clone.querySelectorAll?.('style,script,template,title,meta,link,[data-visualize-title]').forEach((node) => node.remove());
     const visibleText = String(clone.textContent || '').replace(/\\s+/g, '').trim();
     if (visibleText) return true;
     if (root.querySelector('svg,canvas,img,picture,video,table,ul,ol,button,input,select,textarea,progress')) return true;
@@ -320,9 +400,10 @@ export const buildRuntimeDocument = (id: string) => {
       reject(error);
     }
   });
-  const sanitizeAndRender = (html, final) => {
+  const sanitizeAndRender = (html, final, title) => {
     const source = String(html || '');
-    if (final && source.trim() && source === lastRenderedSource) {
+    const reportTitle = String(title || '').trim();
+    if (final && source.trim() && source === lastRenderedSource && reportTitle === lastRenderedTitle) {
       postSize();
       parent.postMessage({ type: 'visualize-widget:rendered', id: widgetId, hasContent: hasRenderedContent() }, '*');
       return;
@@ -339,10 +420,19 @@ export const buildRuntimeDocument = (id: string) => {
       return;
     }
     root.innerHTML = nextHtml;
-    if (final && source.trim()) lastRenderedSource = source;
+    if (reportTitle) {
+      const heading = document.createElement('h2');
+      heading.setAttribute('data-visualize-title', '');
+      heading.textContent = reportTitle;
+      root.prepend(heading);
+    }
+    if (final && source.trim()) {
+      lastRenderedSource = source;
+      lastRenderedTitle = reportTitle;
+    }
     const firstContent = visibleContentNodes()[0];
     if (firstContent) firstContent.setAttribute('data-visualize-root', '');
-    root.insertAdjacentHTML('beforeend', '<style data-visualize-platform-normalize>[data-visualize-root]{background:transparent!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;margin-top:0!important;padding-top:0!important}</style>');
+    installPlatformNormalize();
     normalizeSvgInk();
     postSize();
     parent.postMessage({ type: 'visualize-widget:rendered', id: widgetId, hasContent: hasRenderedContent() }, '*');
@@ -386,13 +476,17 @@ export const buildRuntimeDocument = (id: string) => {
     }
     if (data.type !== 'visualize-widget:update') return;
     applyHostCssVars(data.cssVars, data.theme);
-    sanitizeAndRender(data.html, Boolean(data.final));
+    sanitizeAndRender(data.html, Boolean(data.final), data.title);
   });
   window.addEventListener('load', postSize);
   window.addEventListener('resize', postSize);
   if (typeof ResizeObserver !== 'undefined') {
     const observer = new ResizeObserver(postSize);
     if (root) observer.observe(root);
+  }
+  if (root && typeof MutationObserver !== 'undefined') {
+    const observer = new MutationObserver(() => requestAnimationFrame(postSize));
+    observer.observe(root, { childList: true, subtree: true, characterData: true, attributes: true });
   }
   parent.postMessage({ type: 'visualize-widget:ready', id: widgetId }, '*');
   requestAnimationFrame(postSize);
@@ -410,8 +504,10 @@ export const buildRuntimeDocument = (id: string) => {
     '<style>',
     visualizeWidgetRuntimeCss,
     visualizeWidgetUtilitiesCss,
+    String(importedArtifactThemeCss || ''),
     '</style>',
-    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.34.1/dist/tabler-icons.min.css">',
+    // Optional icon fonts must not delay the widget runtime or theme updates.
+    '<link rel="stylesheet" media="print" onload="this.media=\'all\'" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.34.1/dist/tabler-icons.min.css">',
     '</head>',
     '<body>',
     '<div id="root"></div>',
@@ -422,4 +518,3 @@ export const buildRuntimeDocument = (id: string) => {
     '</html>',
   ].join('\n')
 }
-

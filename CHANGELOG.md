@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased
+
+- Removed the renderer and height-cache caps so long reports are no longer clipped.
+- Allowed final measurements to shrink after scripts settle, preventing stale blank space below artifacts.
+- Observed streamed descendant mutations so overflowing or absolutely positioned content can update the iframe height.
+- Normalized report roots to the full host width and removed legacy centered canvas gutters.
+- Added a dark-theme compatibility layer for legacy `.sv` reports with fixed light surfaces, text, tables, badges, and SVG labels.
+- Tightened authoring guidance for chart gutters, bar-label contrast, and connected line series.
+- Added chart typography and long-category guidance to prevent fixed-viewBox SVG upscaling from making labels larger than titles or causing x-axis collisions.
+- Added final-size guidance for non-scaling strokes, markers, bar thickness, and corner radii in responsive SVG charts.
+- Added fixed vertical-rhythm guidance and HTML/CSS grid recommendations for long horizontal rankings on wide screens.
+- Required axis-adjacent bar ends to stay square while rounding only the free outer end.
+- Moved the default chart-legend position below the plot, centered it as a group, and kept it outside the rendering surface.
+- Clarified that reducing chart-card whitespace must preserve a dominant plot area and use a viewBox sized for the chart's actual column width.
+- Removed duplicated bottom spacing between SVG axis-label bands and external legends.
+- Added responsive SVG text compensation for wide share captures without reducing plot geometry.
+- Prevented short chart cards in side-by-side grids from stretching to the height of taller neighbors.
+
 ## 0.1.1
 
 - Pointed the npm package homepage to the live StreamViz website and playground.
