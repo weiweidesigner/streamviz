@@ -72,6 +72,7 @@
       "import": "./dist/react.js"
     },
     "./styles.css": "./dist/styles.css",
+    "./artifact-theme.css": "./dist/artifact-theme.css",
     "./visualize-widget-runtime.css": "./dist/visualize-widget-runtime.css",
     "./visualize-widget-utilities.css": "./dist/visualize-widget-utilities.css"
   },

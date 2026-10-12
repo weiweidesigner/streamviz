@@ -19,6 +19,7 @@ export default defineConfig({
         fs.writeFileSync(path.resolve(__dirname, 'dist/visualize-widget-runtime.css'), runtimeCss)
         fs.copyFileSync(utilitiesSource, path.resolve(__dirname, 'dist/visualize-widget-utilities.css'))
         fs.copyFileSync(hostSource, path.resolve(__dirname, 'dist/styles.css'))
+        fs.copyFileSync(path.resolve(__dirname, 'src/theme/artifact-theme.css'), path.resolve(__dirname, 'dist/artifact-theme.css'))
       },
     },
   ],

@@ -120,7 +120,7 @@ describe('StreamVisualization', () => {
     })
 
     expect(matchMedia).toHaveBeenCalledWith('(prefers-color-scheme: dark)')
-    expect(postMessage).toHaveBeenCalledWith(expect.objectContaining({ theme: 'light' }), '*')
+    expect(postMessage).toHaveBeenCalledWith(expect.objectContaining({ theme: 'light', title: 'Release readiness' }), '*')
     Reflect.deleteProperty(window, 'matchMedia')
   })
 

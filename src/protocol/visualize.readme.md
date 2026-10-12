@@ -28,7 +28,7 @@ These rules apply to ALL use cases.
 - **Seamless**: Users shouldn't notice where the host app ends and your widget begins.
 - **Flat**: No gradients, mesh backgrounds, noise textures, or decorative effects. Clean flat surfaces.
 - **Compact**: Show the essential inline. Explain the rest in text.
-- **Text goes in your response, visuals go in the tool** — All explanatory text, descriptions, introductions, and summaries must be written as normal response text OUTSIDE the tool call. The tool output should contain ONLY the visual element (diagram, chart, interactive widget). Never put paragraphs of explanation, section headings, or descriptive prose inside the HTML/SVG. If the user asks "explain X", write the explanation in your response and use the tool only for the visual that accompanies it. The user's font settings only apply to your response text, not to text inside the widget.
+- **Report content belongs to the widget** — For a report, dashboard, or chart with a conclusion, pass its concise report title in the tool's `title` field. StreamViz renders that title inside the themed artifact. Put any subtitle, key finding, labels, and annotations that visually belong with the artifact in the HTML/SVG too. The normal response may add conversational context, but must not repeat the report title or split a report heading from its artifact. Keep long-form explanation in the response.
 
 ### Streaming
 Output streams token-by-token. Structure code so useful content appears early.
@@ -55,7 +55,7 @@ Output streams token-by-token. Structure code so useful content appears early.
 - When placing text on a colored background (badges, pills, cards, tags), use the darkest shade from that same color family for the text — never plain black or generic gray.
 - **Corners**: use `border-radius: var(--border-radius-md)` (or `-lg` for cards) in HTML. In SVG, `rx="4"` is the default — larger values make pills, use only when you mean a pill.
 - **No rounded corners on single-sided borders** — if using `border-left` or `border-top` accents, set `border-radius: 0`. Rounded corners only work with full borders on all sides.
-- **No titles or prose inside the tool output** — see Philosophy above.
+- **Do not duplicate the report title in HTML** — StreamViz renders the tool `title` as the artifact's themed heading. Do not add another top-level `h1`/`h2` for the same title. Short subtitles, labels, and report-local explanatory text are allowed when they are part of the visual.
 - **Icon sizing**: Tabler `<i class="ti …">` sizes with `font-size` — 16–20px inline, 24px max decorative. For one-off inline SVG icons, set `width`/`height` explicitly (same limits).
 - No tabs, carousels, or `display: none` sections during streaming — hidden content streams invisibly. Show all content stacked vertically. (Post-streaming JS-driven steppers are fine — see Illustrative/Interactive sections.)
 - No nested scrolling — auto-fit height.

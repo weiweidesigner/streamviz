@@ -98,6 +98,7 @@ export default function StreamVisualization({
     frameWindow.postMessage({
       type: 'visualize-widget:update',
       id: idRef.current,
+      title,
       html: latestPayloadRef.current.code,
       final: latestPayloadRef.current.final,
       cssVars: cssVarsRef.current,
@@ -215,7 +216,7 @@ export default function StreamVisualization({
     }
     window.addEventListener('message', handleMessage)
     return () => window.removeEventListener('message', handleMessage)
-  }, [onSendPrompt, resolvedTheme, sourceKey])
+  }, [onSendPrompt, resolvedTheme, sourceKey, title])
 
   useEffect(() => () => {
     const pending = snapshotRequestRef.current
@@ -271,7 +272,7 @@ export default function StreamVisualization({
       window.cancelAnimationFrame(raf)
       timers.forEach((timer) => window.clearTimeout(timer))
     }
-  }, [cssVars, displayCode, exportCode, final, hasDisplayCode, ready, rendered, resolvedTheme, sourceKey, srcDoc])
+  }, [cssVars, displayCode, exportCode, final, hasDisplayCode, ready, rendered, resolvedTheme, sourceKey, srcDoc, title])
 
   const exportHtml = () => {
     downloadTextFile(buildExportDocument(exportCode || code, title), `${safeExportName(title)}.html`)
