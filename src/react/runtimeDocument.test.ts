@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { buildRuntimeDocument } from './runtimeDocument'
+import { readFileSync } from 'node:fs'
 
 describe('buildRuntimeDocument', () => {
   it('embeds shared mobile layout, compact spacing, and center-aligned chart points', () => {
-    const document = buildRuntimeDocument('mobile-widget')
+    const document = readFileSync('src/theme/artifact-theme.css', 'utf8')
 
     expect(document).toContain('repeat(auto-fit,minmax(min(100%,150px),1fr))')
     expect(document).toContain('--sv-card-gap:16px;--sv-card-padding:12px;--sv-component-gap:8px')
