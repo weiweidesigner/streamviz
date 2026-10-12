@@ -31,4 +31,11 @@ describe('artifact layout ownership', () => {
     expect(getComputedStyle(document.querySelector('.outside')!).display).toBe('block')
     expect(getComputedStyle(document.querySelector('.card')!).display).toBe('block')
   })
+
+  it('normalizes a card that is itself the runtime root', () => {
+    document.head.innerHTML = `<style>${css}</style>`
+    document.body.innerHTML = '<section class="card" data-visualize-root><h2>Heading</h2><p>Body</p></section>'
+    expect(getComputedStyle(document.querySelector('.card')!).display).toBe('flex')
+    expect(parseFloat(getComputedStyle(document.querySelector('p')!).getPropertyValue('margin-block'))).toBe(0)
+  })
 })
