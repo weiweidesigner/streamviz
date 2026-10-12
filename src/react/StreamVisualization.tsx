@@ -255,7 +255,9 @@ export default function StreamVisualization({
     const displayHeightKey = visualizeWidgetSourceKey(displayCode)
     const measuredHeight = measuredHeightKeyRef.current === displayHeightKey ? measuredHeightRef.current : null
     const cachedHeight = sourceKey ? getCachedVisualizeWidgetHeight(sourceKey) : null
-    const estimatedHeight = measuredHeight || cachedHeight || estimateWidgetHeight(displayCode, final)
+    // Keep the last real measurement until the frame reports the new DOM size.
+    // Re-estimating on every token causes visible expand/shrink jumps.
+    const estimatedHeight = measuredHeight || measuredHeightRef.current || cachedHeight || estimateWidgetHeight(displayCode, final)
     setHeight((previous) => {
       if (Math.abs(previous - estimatedHeight) <= 2) return previous
       return estimatedHeight
