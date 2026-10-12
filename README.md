@@ -293,3 +293,7 @@ Contributions are welcome. Read [CONTRIBUTING.md](./CONTRIBUTING.md), [CODE_OF_C
 
 Apache-2.0 © 2026 Siyuan Duan. See [NOTICE](./NOTICE) and
 [third-party notices](./THIRD_PARTY_NOTICES.md).
+# Smooth streaming display
+
+Set `smoothStreaming={true}` and `loadingDwellMs={0}` on `StreamVisualization` to spread received append bursts over animation frames. Smoothing is opt-in and does not accelerate model generation or network delivery. Saved final reports render immediately; streamed finalization waits for the displayed suffix to catch up. Emit visible headings and concise content before stylesheets to reduce time to first visible content.
+

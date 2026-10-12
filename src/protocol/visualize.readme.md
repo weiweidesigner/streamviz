@@ -32,7 +32,7 @@ These rules apply to ALL use cases.
 
 ### Streaming
 Output streams token-by-token. Structure code so useful content appears early.
-- **HTML**: `<style>` (short) → content HTML → `<script>` last.
+- **HTML**: visible heading and a concise evidence-backed sentence first → chart/content HTML → `<script>` last. Use built-in `sv-*` primitives and `data-sv-layout` markers. Do not front-load a stylesheet or an empty shell; raw `<style>` content cannot render until its closing tag arrives.
 - **SVG**: `<defs>` (markers) → visual elements immediately.
 - Prefer inline `style="..."` over `<style>` blocks — inputs/controls must look correct mid-stream.
 - Keep `<style>` under ~15 lines. Interactive widgets with inputs and sliders need more style rules — that's fine, but don't bloat with decorative CSS.

@@ -11,6 +11,7 @@ import { clampHeight, estimateWidgetHeight, widgetSourceHasRenderableContent } f
 import { collectCssVars, resolveWidgetTheme, serializeThemeCssVars, VISUALIZE_WIDGET_VARS } from './theme'
 import type { VisualizeWidgetFrameProps } from './types'
 import { buildRuntimeDocument } from './runtimeDocument'
+import { useStreamingCode } from './useStreamingCode'
 
 const spacingPx = (steps: number) => steps * 4
 const COPY_FEEDBACK_DURATION_MS = 1000
@@ -29,12 +30,13 @@ const defaultRenderIcon = (
 
 export default function StreamVisualization({
   title,
-  code,
+  code: incomingCode,
   exportCode,
   loadingMessage,
   loadingMessages,
   loadingDwellMs = VISUALIZE_LOADING_MESSAGE_DWELL_MS,
-  final,
+  final: incomingFinal,
+  smoothStreaming = false,
   showActions = true,
   onSendPrompt,
   renderIcon = defaultRenderIcon,
@@ -44,6 +46,7 @@ export default function StreamVisualization({
   getTheme,
   cssVarNames = VISUALIZE_WIDGET_VARS,
 }: VisualizeWidgetFrameProps) {
+  const { code, final } = useStreamingCode(incomingCode, incomingFinal, smoothStreaming)
   const blockRef = useRef<HTMLDivElement | null>(null)
   const iframeRef = useRef<HTMLIFrameElement | null>(null)
   const idRef = useRef(`visualize-widget-${Math.random().toString(36).slice(2)}`)

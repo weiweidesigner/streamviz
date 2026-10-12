@@ -51,6 +51,8 @@ export type VisualizeWidgetFrameProps = {
   /** Minimum time each loading message stays visible after renderable code arrives. Defaults to 1000ms. Set to 0 for immediate streaming. */
   loadingDwellMs?: number
   final: boolean
+  /** Spread received append bursts over animation frames. Defaults to false. Saved final reports remain instant; streamed finalization waits for display catch-up. */
+  smoothStreaming?: boolean
   /** Whether to render the copy and export actions after the artifact completes. Defaults to true. */
   showActions?: boolean
   onSendPrompt?: (prompt: string) => void

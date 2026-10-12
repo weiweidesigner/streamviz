@@ -285,3 +285,9 @@ npm run check
 
 Apache-2.0 © 2026 Siyuan Duan。另请参阅 [NOTICE](./NOTICE) 和
 [第三方许可声明](./THIRD_PARTY_NOTICES.md)。
+# 平滑流式展示
+
+为 `StreamVisualization` 设置 `smoothStreaming={true}` 和 `loadingDwellMs={0}`，可将已经收到的突发追加内容分几帧展开，而不是整块跳出。该选项默认关闭，便于保持现有集成行为。
+
+这不会加快模型或网络；只平滑收到内容后的展示。初次打开已完成的报告仍立即显示。流式结束时会先展示剩余内容，再进入完成状态。生成时先输出可见标题、短说明，避免在前面堆积大段 CSS。
+
