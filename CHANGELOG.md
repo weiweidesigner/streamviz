@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added market-aware financial direction tokens: red-up/green-down for CN/HK, green-up/red-down for US, independent of status colors.
+
 - Unified report table backgrounds with their surrounding cards in light and dark themes.
 - Added shared host payload normalization and streamed markup whitespace repair, replacing duplicated consuming-app wrappers.
 

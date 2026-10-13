@@ -316,3 +316,10 @@ d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(us => {
 });
 </script>
 ```
+
+### Financial direction colors
+Use `--sv-price-up`, `--sv-price-down`, and `--sv-price-flat` for returns, price
+changes, and market breadth, not success/danger status colors. Set
+`data-financial-market="CN"`, `"HK"`, or `"US"` on each region. CN and HK use
+red gains and green losses; US uses green gains and red losses. Mark mixed-market
+sections independently and retain this convention across light/dark themes.

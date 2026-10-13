@@ -8,4 +8,4 @@ export type {
 export { default as StreamVisualization } from './StreamVisualization'
 export type { VisualizeWidgetFrameProps as StreamVisualizationProps } from './types'
 
-export { normalizeStreamVisualizationPayload, repairStreamedHtml } from './payload'
+export { normalizeStreamVisualizationPayload, repairStreamedHtml, financialMarket, addFinancialMarketColors } from './payload'
