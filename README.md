@@ -297,3 +297,22 @@ Apache-2.0 © 2026 Siyuan Duan. See [NOTICE](./NOTICE) and
 
 Set `smoothStreaming={true}` and `loadingDwellMs={0}` on `StreamVisualization` to spread received append bursts over animation frames. Smoothing is opt-in and does not accelerate model generation or network delivery. Saved final reports render immediately; streamed finalization waits for the displayed suffix to catch up. Emit visible headings and concise content before stylesheets to reduce time to first visible content.
 
+
+### Streaming host payloads
+
+`normalizeStreamVisualizationPayload(payload)` converts completed or partial tool
+arguments into `StreamVisualization` props. It accepts `code`, `widget_code`,
+`toolRawInput` / `rawArguments`, loading-message aliases, and `localSmooth` as a
+compatibility alias for `smoothStreaming`. Streaming defaults to smooth display,
+zero loading dwell, and hidden export actions; hosts can override the returned
+props. `repairStreamedHtml(source)` repairs mechanical missing whitespace in
+streamed tags, attributes and CSS. It is not a sanitizer: the renderer still
+handles the repaired source as untrusted input. Host DOM mounting, theme events
+and application messaging belong in the consuming app.
+
+```tsx
+import { StreamVisualization, normalizeStreamVisualizationPayload } from 'streamviz-react'
+
+const props = normalizeStreamVisualizationPayload(toolPayload)
+return <StreamVisualization {...props} theme={{ mode: 'dark' }} />
+```

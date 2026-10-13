@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Unified report table backgrounds with their surrounding cards in light and dark themes.
+- Added shared host payload normalization and streamed markup whitespace repair, replacing duplicated consuming-app wrappers.
+
 - Removed the renderer and height-cache caps so long reports are no longer clipped.
 - Allowed final measurements to shrink after scripts settle, preventing stale blank space below artifacts.
 - Observed streamed descendant mutations so overflowing or absolutely positioned content can update the iframe height.

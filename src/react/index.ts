@@ -7,3 +7,5 @@ export type {
 } from './types'
 export { default as StreamVisualization } from './StreamVisualization'
 export type { VisualizeWidgetFrameProps as StreamVisualizationProps } from './types'
+
+export { normalizeStreamVisualizationPayload, repairStreamedHtml } from './payload'
