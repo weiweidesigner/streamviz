@@ -137,3 +137,8 @@
 :root[data-theme="dark"] .sv-badge-success,:root[data-theme="dark"] .sv .sv-chip.success{color:#7ce6c6!important;background:#133c36!important;border-color:#276658!important}
 :root[data-theme="dark"] .sv-badge-warning,:root[data-theme="dark"] .sv .sv-chip.warning{color:#ffd28b!important;background:#493617!important;border-color:#806128!important}
 :root[data-theme="dark"] .sv-badge-danger,:root[data-theme="dark"] .sv .sv-chip.danger{color:#ffabb7!important;background:#49202a!important;border-color:#7b3643!important}
+
+/* Report tables sit on the same card surface as ranked lists. Override the
+   widget runtime's independent neutral table palette inside report roots. */
+:is([data-aime-streamviz-root],[data-visualize-root]) :is(table,.table-wrap,.sv-table-wrap){background:transparent!important;border-color:var(--sv-border-subtle)!important}
+:is([data-aime-streamviz-root],[data-visualize-root]) thead th{background:var(--sv-surface-primary)!important;color:var(--sv-text-secondary)!important;border-color:var(--sv-border-subtle)!important}
