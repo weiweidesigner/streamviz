@@ -39,3 +39,14 @@ describe('artifact layout ownership', () => {
     expect(parseFloat(getComputedStyle(document.querySelector('p')!).getPropertyValue('margin-block'))).toBe(0)
   })
 })
+
+describe('report surfaces', () => {
+  it.each(['light','dark'])('keeps %s report metrics transparent and removes section rules', (theme) => {
+    document.documentElement.dataset.theme = theme
+    document.head.innerHTML = `<style>.sv-head,.sv-metrics{border-bottom:1px solid #e7edf4}.sv-metric{background:#181818!important;border:1px solid #e7edf4}</style><style>${css}</style>`
+    document.body.innerHTML = '<main data-aime-streamviz-root class="sv"><header class="sv-head">Title</header><section class="sv-metrics"><article class="sv-metric">42</article></section></main>'
+    expect(getComputedStyle(document.querySelector('.sv-metric')!).backgroundColor).toBe('rgba(0, 0, 0, 0)')
+    expect(getComputedStyle(document.querySelector('.sv-head')!).borderBottomWidth).toBe('0px')
+    expect(getComputedStyle(document.querySelector('.sv-metrics')!).borderBottomWidth).toBe('0px')
+  })
+})

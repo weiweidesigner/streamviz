@@ -147,3 +147,11 @@
 :root{--sv-price-up:var(--sv-gain);--sv-price-down:var(--sv-loss);--sv-price-flat:var(--sv-text-secondary)}
 [data-financial-market="CN"],[data-financial-market="HK"]{--sv-price-up:var(--sv-loss);--sv-price-down:var(--sv-gain)}
 [data-financial-market="US"]{--sv-price-up:var(--sv-gain);--sv-price-down:var(--sv-loss)}
+
+/* Reports flow into the conversation: metric groups are typography, not panels. */
+:root[data-theme] :is([data-aime-streamviz-root],[data-visualize-root]) :is(.sv-head,.sv-metrics){border:0!important}
+:root[data-theme] :is([data-aime-streamviz-root],[data-visualize-root]) :is(.sv-metric,.metric,.stat){background:transparent!important;border:0!important;box-shadow:none!important}
+:root[data-theme] :is([data-aime-streamviz-root],[data-visualize-root]) :is(.sv-head,.sv-section,.sv-note){border-color:var(--sv-border-subtle)!important}
+:root[data-theme] :is([data-aime-streamviz-root],[data-visualize-root]) :is(.sv-chip--success,.sv-badge-success,.chip.success){color:var(--sv-text-success,var(--sv-status-success))!important;background:var(--sv-bg-success)!important;border-color:var(--sv-border-success,var(--sv-border-subtle))!important}
+:root[data-theme] :is([data-aime-streamviz-root],[data-visualize-root]) :is(.sv-chip--warning,.sv-badge-warning,.chip.warning){color:var(--sv-text-warning,var(--sv-warning))!important;background:var(--sv-bg-warning)!important;border-color:var(--sv-border-warning,var(--sv-border-subtle))!important}
+:root[data-theme] :is([data-aime-streamviz-root],[data-visualize-root]) :is(.sv-chip--danger,.sv-badge-danger,.chip.danger){color:var(--sv-text-danger,var(--sv-status-danger))!important;background:var(--sv-bg-danger)!important;border-color:var(--sv-border-danger,var(--sv-border-subtle))!important}
