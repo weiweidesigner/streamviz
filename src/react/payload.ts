@@ -24,6 +24,9 @@ export function repairStreamedHtml(value: unknown): string {
 export function financialMarket(source: string, requested?: unknown): 'CN' | 'HK' | 'US' | undefined {
   const explicit = String(requested || '').toUpperCase();
   if (['CN', 'HK', 'US'].includes(explicit)) return explicit as 'CN' | 'HK' | 'US';
+  // Full-document html attributes are stripped by iframe fragment parsing.
+  const documentMarket = source.match(/<html\b[^>]*data-financial-market\s*=\s*["'](CN|HK|US)["']/i)?.[1]?.toUpperCase();
+  if (documentMarket) return documentMarket as 'CN' | 'HK' | 'US';
   // Authored markers take precedence and can differ between sections.
   if (/data-financial-market\s*=/.test(source)) return undefined;
   const cn = /A\s*股|A-shares?\b|\b\d{6}\.(?:SH|SZ|BJ)\b/i.test(source);

@@ -41,6 +41,10 @@ describe('financial market conventions', () => {
     expect(props.code).toContain(`--sv-price-up:var(${up})`);
     expect(props.exportCode).toBe(props.code);
   });
+  it('keeps full-document market metadata when the renderer extracts body fragments', () => {
+    const code = '<html data-financial-market="CN"><body><b style="color:var(--sv-price-up)">+2%</b></body></html>';
+    expect(normalizeStreamVisualizationPayload({code}).code).toContain(':root{--sv-price-up:var(--sv-loss)');
+  });
   it('preserves independently marked mixed markets and non-financial status colors', () => {
     const code = '<section data-financial-market="HK">港股</section><section data-financial-market="US">美股</section>';
     expect(normalizeStreamVisualizationPayload({code}).code).toBe(code);
