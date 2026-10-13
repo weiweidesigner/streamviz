@@ -46,7 +46,7 @@
 .sv-line-values span{white-space:nowrap;font-variant-numeric:tabular-nums}
 .sv-line-values i{display:inline-block;width:16px;height:3px;margin-right:6px;vertical-align:middle}
 /* Generated palettes are aliases, never a separate fixed light/dark theme. */
-[data-aime-streamviz-root],[data-aime-streamviz-root] *{--c-bg:transparent!important;--c-surface:var(--sv-surface-primary)!important;--c-surface2:var(--sv-surface-secondary)!important;--c-border:var(--sv-border-subtle)!important;--c-text:var(--sv-text-primary)!important;--c-text2:var(--sv-text-secondary)!important;--c-muted:var(--sv-text-secondary)!important;--c-up:var(--sv-loss)!important;--c-dn:var(--sv-gain)!important;--c-flat:var(--sv-text-secondary)!important}
+[data-aime-streamviz-root],[data-aime-streamviz-root] *{--c-bg:transparent!important;--c-surface:var(--sv-surface-primary)!important;--c-surface2:var(--sv-surface-secondary)!important;--c-border:var(--sv-border-subtle)!important;--c-text:var(--sv-text-primary)!important;--c-text2:var(--sv-text-secondary)!important;--c-muted:var(--sv-text-secondary)!important;--c-up:var(--sv-price-up)!important;--c-dn:var(--sv-price-down)!important;--c-flat:var(--sv-text-secondary)!important}
 :root:not([data-theme="dark"]){color-scheme:light;--sv-gain:#08745f;--sv-loss:#c43244;--sv-warning:#925f0b;--sv-status-success:#08745f;--sv-status-danger:#c43244;--sv-bg-success:#e9f8f2;--sv-bg-warning:#fff5db;--sv-bg-danger:#fff0f1}
 :root[data-theme="dark"]{color-scheme:dark;--sv-gain:#3ddc97;--sv-loss:#ff6b6b;--sv-warning:#ffd28b;--sv-bg-success:#133c36;--sv-bg-warning:#493617;--sv-bg-danger:#49202a}
 [data-aime-streamviz-root]{color:var(--sv-text-primary)!important;background:transparent!important}
@@ -57,7 +57,7 @@
 :is(.stv,.sv-report,.svv,.sv) :is(.cap,.bles,.note,.sub,.lg,.sv-summary,.sv-narrative p,.sv-node span,.sv-metric p,.sv-metric small,.sv-note,.sv-kicker,.stat span){color:var(--sv-text-secondary)!important}
 :is(.stv,.sv-report,.svv,.sv) :is(table,.sv-node b,.sv-rank b,.sv-event b){color:var(--sv-text-primary)!important;border-color:var(--sv-border-subtle)!important}
 :is(.stv,.sv-report,.svv,.sv) :is(th,.sv-event time,.sv-rank small,.sv-event p){color:var(--sv-text-secondary)!important;background:var(--sv-surface-secondary)!important;border-color:var(--sv-border-subtle)!important}
-.stv .up{color:var(--sv-loss)!important}.stv .dn{color:var(--sv-gain)!important}.stv .nt{color:var(--sv-warning)!important}
+.stv .up{color:var(--sv-price-up)!important}.stv .dn{color:var(--sv-price-down)!important}.stv .nt{color:var(--sv-warning)!important}
 :is(.sv-chip--success,.sv-badge-success,.chip.success){color:var(--sv-status-success)!important;background:var(--sv-bg-success)!important}
 :is(.sv-chip--warning,.sv-badge-warning,.chip.warning){color:var(--sv-warning)!important;background:var(--sv-bg-warning)!important}
 :is(.sv-chip--danger,.sv-badge-danger,.chip.danger){color:var(--sv-status-danger)!important;background:var(--sv-bg-danger)!important}
@@ -142,3 +142,8 @@
    widget runtime's independent neutral table palette inside report roots. */
 :is([data-aime-streamviz-root],[data-visualize-root]) :is(table,.table-wrap,.sv-table-wrap){background:transparent!important;border-color:var(--sv-border-subtle)!important}
 :is([data-aime-streamviz-root],[data-visualize-root]) thead th{background:var(--sv-surface-primary)!important;color:var(--sv-text-secondary)!important;border-color:var(--sv-border-subtle)!important}
+
+/* Financial direction is market-specific; success/danger remain status colors. */
+:root{--sv-price-up:var(--sv-gain);--sv-price-down:var(--sv-loss);--sv-price-flat:var(--sv-text-secondary)}
+[data-financial-market="CN"],[data-financial-market="HK"]{--sv-price-up:var(--sv-loss);--sv-price-down:var(--sv-gain)}
+[data-financial-market="US"]{--sv-price-up:var(--sv-gain);--sv-price-down:var(--sv-loss)}

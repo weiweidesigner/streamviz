@@ -316,3 +316,13 @@ import { StreamVisualization, normalizeStreamVisualizationPayload } from 'stream
 const props = normalizeStreamVisualizationPayload(toolPayload)
 return <StreamVisualization {...props} theme={{ mode: 'dark' }} />
 ```
+
+### Financial market colors
+
+Use `--sv-price-up`, `--sv-price-down`, and `--sv-price-flat` for financial returns,
+price changes and market breadth. Mark each region with `data-financial-market="CN"`,
+`"HK"`, or `"US"`: CN/HK use red for gains and green for losses; US uses green
+for gains and red for losses. Status success/danger tokens retain their meaning.
+The payload normalizer accepts `financialMarket` and infers unambiguous market
+labels/codes for unmarked artifacts. Reports mixing US and CN/HK conventions must
+mark each section explicitly. Exported documents retain the same convention.
