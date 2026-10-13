@@ -37,13 +37,13 @@ export function financialMarket(source: string, requested?: unknown): 'CN' | 'HK
 }
 
 export function addFinancialMarketColors(code: string, requested?: unknown): string {
-  if (!code.trim()) return code;
+  if (!code.trim() || /^<style data-financial-market=/.test(code)) return code;
   const market = financialMarket(code, requested);
   if (!market) return code;
   const up = market === 'US' ? '--sv-gain' : '--sv-loss';
   const down = market === 'US' ? '--sv-loss' : '--sv-gain';
   // Use a style fragment instead of wrapping partially streamed or full documents.
-  return `<style data-financial-market="${market}">:root{--sv-price-up:var(${up});--sv-price-down:var(${down})}</style>` + code;
+  return `<style data-financial-market="${market}">:root{--sv-price-up:var(${up})!important;--sv-price-down:var(${down})!important}</style>` + code;
 }
 
 export function normalizeStreamVisualizationPayload(payload: Record<string, unknown> = {}) {
