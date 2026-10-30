@@ -23,4 +23,14 @@ describe('buildRuntimeDocument', () => {
     expect(document).toContain('[data-theme="dark"] [data-visualize-root] table')
     expect(document).toContain('td:first-child{color:var(--sv-text-secondary)!important}')
   })
+
+  it('sizes each streamed chart before reporting dimensions while deferring generated scripts', () => {
+    const document = buildRuntimeDocument('chart-stream')
+    const sizing = document.indexOf('normalizeChartViewport(root);')
+    const finalGate = document.indexOf('if (!final || !source.trim() || source === lastExecuted) return;')
+    expect(sizing).toBeGreaterThan(document.indexOf('reconcileArtifactDom(root, fragment.content);'))
+    expect(sizing).toBeLessThan(document.indexOf('postSize();', sizing))
+    expect(sizing).toBeLessThan(finalGate)
+    expect(finalGate).toBeLessThan(document.indexOf('const runScripts = async'))
+  })
 })

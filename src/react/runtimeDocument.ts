@@ -2,6 +2,7 @@ import importedVisualizeWidgetRuntimeCss from '../theme/visualize-widget-runtime
 import importedVisualizeWidgetUtilitiesCss from '../theme/visualize-widget-utilities.css?raw'
 import importedArtifactThemeCss from '../theme/artifact-theme.css?raw'
 import { reconcileArtifactDom } from './reconcileArtifactDom'
+import { normalizeChartViewport } from './normalizeChartViewport'
 
 const VISUALIZE_WIDGET_RUNTIME_CSS_FALLBACK = [
   ':root{',
@@ -25,6 +26,7 @@ export const buildRuntimeDocument = (id: string) => {
   let lastRenderedTitle = '';
   let lastRenderedFinal = false;
   const reconcileArtifactDom = ${reconcileArtifactDom.toString()};
+  const normalizeChartViewport = ${normalizeChartViewport.toString()};
   let pendingUpdate = null;
   let renderFrame = 0;
   const blockedElements = new Set(['iframe', 'object', 'embed', 'base']);
@@ -451,6 +453,7 @@ export const buildRuntimeDocument = (id: string) => {
     if (firstContent) firstContent.setAttribute('data-visualize-root', '');
     installPlatformNormalize();
     normalizeSvgInk();
+    normalizeChartViewport(root);
     postSize();
     parent.postMessage({ type: 'visualize-widget:rendered', id: widgetId, hasContent: hasRenderedContent() }, '*');
     if (!final || !source.trim() || source === lastExecuted) return;
