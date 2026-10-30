@@ -2,7 +2,7 @@
 // Generated scripts remain deferred until final; chart sizing is platform work.
 export function normalizeChartViewport(root: ParentNode | null) {
   root?.querySelectorAll<SVGSVGElement>('svg[viewBox]').forEach(svg => {
-    if (svg.closest('svg svg') || svg.querySelectorAll('text').length < 2 ||
+    if (svg.closest('svg svg') || !svg.querySelector('text') ||
         !svg.querySelector('rect,polyline,path,line,circle')) return
     const box = svg.getAttribute('viewBox')?.trim().split(/[\s,]+/).map(Number)
     if (!box || box.length !== 4 || !box.every(Number.isFinite) || box[2] <= 0 || box[3] <= 0) return
